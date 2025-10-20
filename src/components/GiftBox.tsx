@@ -19,6 +19,9 @@ const GiftBox: React.FC<GiftBoxProps> = ({
       setOpen(true);
       onOpen?.();
     }
+    else {
+    setOpen(false);
+  }
   };
 
   return (

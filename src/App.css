@@ -1,4 +1,8 @@
-/* Basic box structure and styling */
+:root {
+  --ribbon-color: linear-gradient(135deg, #f0b90b 0%, #f8d33a 100%);
+  --wrapping-paper: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --glow-color: rgba(139, 92, 246, 0.8);
+}
 .box {
   margin: 200px 50px 50px;
   height: 220px;
@@ -31,4 +35,26 @@
   position: absolute;
   color: #b91c1c;
   font-weight: 600;
+} 
+body {
+  background: radial-gradient(circle at 30% 30%, #4a00e0, #000000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.box {
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+}
+
+.box:hover {
+  transform: scale(1.05);
+}
+@keyframes lidPopUp {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateX(130px) translateY(30px) rotate(45deg); }
+}
+
+.box.open .lid {
+  animation: lidPopUp 1.2s ease-in-out forwards;
 }
