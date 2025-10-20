@@ -58,3 +58,114 @@ body {
 .box.open .lid {
   animation: lidPopUp 1.2s ease-in-out forwards;
 }
+/* Car animations */
+@keyframes carDriveOut {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  100% { transform: translate(-50%, -120%) scale(1); opacity: 1; }
+}
+.glitter-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.glitter {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--sparkle-gold);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  animation: glitterFall 3s ease-in forwards;
+}
+.glitter-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.glitter {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--sparkle-gold);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  animation: glitterFall 3s ease-in forwards;
+}
+.car-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  z-index: 170;
+  pointer-events: none;
+}
+.contents {
+  position: absolute;
+  top: -98px; /* Position above the box */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180%;
+  color: #b91c1c;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  white-space: normal;
+  padding: 10px 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.95) 100%
+  );
+  border-radius: 12px;
+  border: 2px solid var(--butterfly-purple);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 300; /* Ensure it's above everything */
+}
+.car-image {
+  width: 120px;
+  height: 60px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  border-radius: 8px 8px 2px 2px;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(239, 68, 68, 0.5);
+  transform-style: preserve-3d;
+}
+
+.car-window {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  right: 15px;
+  height: 20px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  border-radius: 3px 3px 0 0;
+}
+
+.car-wheels {
+  position: absolute;
+  bottom: -8px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.car-wheel {
+  width: 16px;
+  height: 16px;
+  background: #1f2937;
+  border-radius: 50%;
+  border: 2px solid #374151;
+}
+

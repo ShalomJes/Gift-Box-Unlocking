@@ -5,6 +5,10 @@ import GiftBox from "./components/GiftBox";
 
 function App() {
   const [isOpened, setIsOpened] = useState(false);
+  const onOpen = (): void => {
+    setIsOpened(true);
+  };
+
 
   return (
     <main className="galaxy-sparkle w-full">
@@ -14,7 +18,7 @@ function App() {
             Here Is Your Reward
           </h1>
         </div>
-        <GiftBox isOpened={isOpened} onOpen={() => setIsOpened(true)} />
+        <GiftBox isOpened={isOpened} onOpen={onOpen} />
       </div>
     </main>
   );
