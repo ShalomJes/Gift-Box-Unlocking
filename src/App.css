@@ -1,24 +1,326 @@
 :root {
   --ribbon-color: linear-gradient(135deg, #f0b90b 0%, #f8d33a 100%);
-  --wrapping-paper: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --wrapping-paper: linear-gradient(
+    135deg,
+    #8b5cf6 0%,
+    #a78bfa 25%,
+    #c4b5fd 50%,
+    #ddd6fe 75%,
+    #8b5cf6 100%
+  );
+  /* --border-color: #7c3aed; */
   --glow-color: rgba(139, 92, 246, 0.8);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --butterfly-pink: #ec4899;
+  --butterfly-purple: #8b5cf6;
+  --sparkle-gold: #942708;
+  --sparkle-silver: #4150a3;
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  text-align: center;
+  background: radial-gradient(circle at 30% 30%, #4a00e0, #000000);
+  box-shadow: 0 0 50px #8e2de2, 0 0 100px #4a00e0,
+    inset 0 0 50px rgba(142, 45, 226, 0.3);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Galaxy Sparkle Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-repeat: repeat;
+  background-size: 400px 400px;
+  animation: sparkleMove 20s linear infinite;
+  z-index: -2;
+  opacity: 0.6;
+}
+
+/* Animated stage background */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(139, 92, 246, 0.2) 0%,
+    rgba(236, 72, 153, 0.15) 20%,
+    rgba(199, 210, 254, 0.1) 50%,
+    transparent 100%
+  );
+  z-index: -1;
+  animation: stageGlow 8s ease-in-out infinite;
+}
+
+.board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  z-index: 1;
+  position: relative;
+}
+
+/* Sparkle container around the box */
+.sparkle-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--sparkle-gold);
+  border-radius: 50%;
+  animation: sparkleFloat 3s ease-in-out infinite;
+}
+
+.sparkle:nth-child(2n) {
+  background: var(--sparkle-silver);
+  width: 3px;
+  height: 3px;
+}
+
+.sparkle:nth-child(3n) {
+  background: var(--butterfly-pink);
+  width: 2px;
+  height: 2px;
+}
+
+/* Stage platform effect */
+.board::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(95, 92, 246, 0.808) 0%,
+    rgba(131, 14, 73, 0.1) 30%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: -1;
+  animation: platformPulse 6s ease-in-out infinite;
+}
+
 .box {
   margin: 200px 50px 50px;
   height: 220px;
   width: 220px;
   position: relative;
+  box-sizing: border-box;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 30px rgba(139, 92, 246, 0.3));
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.box:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 40px rgba(139, 92, 246, 0.5));
+}
+
+.box:hover:not(.open) .lid {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+/* @keyframes lidSlideBack {
+  0% {
+    transform: translateX(150px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+} */
+
+.box:not(.open) .lid {
+  transform: translateX(0) translateY(0) rotate(0deg);
+  transition: transform 0.8s ease-in-out;
+}
+
+.box.open {
+  transform: scale(1.1);
+  transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 50px rgba(139, 92, 246, 0.6));
+}
+
+.box.open .lid {
+  animation: lidPopUp 1.2s ease-in-out forwards;
+}
+@keyframes lidPopUp {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  20% {
+    transform: translateY(-100px) rotate(-10deg);
+  }
+  40% {
+    transform: translateY(-200px) rotate(-15deg);
+  }
+  70% {
+    transform: translateY(-80px) rotate(35deg);
+  }
+  100% {
+    transform: translateX(130px) translateY(30px) rotate(45deg);
+  }
+}
+.box.open .contents {
+  display: block;
+  animation: rewardPopUp 1s cubic-bezier(0.34, 1.56, 0.64, 1) 2s forwards;
+}
+.box,
+.lid,
+.body,
+.contents {
+  box-sizing: border-box;
 }
 
 .lid {
   position: absolute;
   width: 110%;
   height: 30%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  background: var(--wrapping-paper);
   margin: 0 -5%;
+  transition: all 0.3s ease;
   z-index: 200;
+  box-shadow: 0 5px 15px var(--shadow-color),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 3px solid var(--border-color);
+  border-bottom: 0;
   border-radius: 5px 5px 0 0;
+  transform-origin: center bottom;
+  transition: transform 0.8s ease-in-out;
+}
+
+.lid:before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 60px;
+  border-left: 3px solid #dc2626;
+  border-right: 3px solid #dc2626;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  margin: 0 auto;
+  box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.4);
+  transition: all 0.5s ease;
+}
+
+.lid:after {
+  content: "";
+  display: block;
+  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
+  position: absolute;
+  margin-top: 0;
+  margin-left: -12px;
+  top: -25px;
+  left: 50%;
+  z-index: 190;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  border: 3px solid #d97706;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+  animation: glow 2s ease-in-out infinite alternate;
+  transition: all 0.5s ease;
+}
+.lid .ribbon {
+  top: 0;
+  margin-top: -60px;
+  height: 55px;
+  display: block;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+  z-index: 180;
+  transition: all 0.5s ease;
+}
+
+.lid .ribbon:before,
+.lid .ribbon:after {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 55px;
+  width: 55px;
+  top: 50%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
+  border: 3px solid #d97706;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+  transition: all 0.5s ease;
+}
+
+.lid .ribbon:before {
+  left: 50%;
+  transform: translateX(-60%);
+}
+
+.lid .ribbon:after {
+  right: 50%;
+  transform: translateX(60%);
+}
+
+/* Butterfly wings effect */
+.lid .ribbon:before {
+  background: radial-gradient(
+    ellipse at center,
+    var(--butterfly-pink) 0%,
+    var(--butterfly-purple) 50%,
+    transparent 70%
+  );
+  transform: translateX(-60%) rotate(45deg);
+}
+
+.lid .ribbon:after {
+  background: radial-gradient(
+    ellipse at center,
+    var(--butterfly-purple) 0%,
+    var(--butterfly-pink) 50%,
+    transparent 70%
+  );
+  transform: translateX(60%) rotate(-45deg);
 }
 
 .body {
@@ -27,77 +329,64 @@
   z-index: 150;
   bottom: 0;
   width: 100%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  border: 3px solid var(--border-color);
+  background: var(--wrapping-paper);
   border-radius: 0 0 5px 5px;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+}
+
+.body:before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 55px;
+  border-left: 3px solid #dc2626;
+  border-right: 3px solid #dc2626;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  margin: 0 auto;
+  box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 .contents {
   position: absolute;
+  left: 50%;
+  right: 50%;
+  width: 100%;
   color: #b91c1c;
   font-weight: 600;
-} 
-body {
-  background: radial-gradient(circle at 30% 30%, #4a00e0, #000000);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.box {
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
 }
 
-.box:hover {
-  transform: scale(1.05);
-}
-@keyframes lidPopUp {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateX(130px) translateY(30px) rotate(45deg); }
-}
-
-.box.open .lid {
-  animation: lidPopUp 1.2s ease-in-out forwards;
-}
-/* Car animations */
-@keyframes carDriveOut {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  100% { transform: translate(-50%, -120%) scale(1); opacity: 1; }
-}
-.glitter-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 50;
+.car-image {
+  width: 120px;
+  height: 60px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-radius: 8px 8px 2px 2px;
+  position: relative;
+  margin: 0 auto;
+  animation: carRotate 4s ease-in-out infinite;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.glitter {
+.car-image::before {
+  content: "";
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: var(--sparkle-gold);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  animation: glitterFall 3s ease-in forwards;
-}
-.glitter-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 50;
+  top: 15px;
+  left: 10px;
+  right: 10px;
+  bottom: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
 }
 
-.glitter {
+.car-image::after {
+  content: "🚗";
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: var(--sparkle-gold);
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  animation: glitterFall 3s ease-in forwards;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
 }
 .car-container {
   position: absolute;
@@ -108,6 +397,27 @@ body {
   z-index: 170;
   pointer-events: none;
 }
+@keyframes carFloat {
+  0%,
+  100% {
+    transform: translate(-50%, -120%) scale(1) rotateY(0deg) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -130%) scale(1.05) rotateY(5deg)
+      translateY(-10px);
+  }
+}
+.box.open .car-container {
+  animation: carDriveOut 2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards,
+    carFloat 3s ease-in-out infinite 2.5s;
+}
+
+.box:not(.open) .car-container {
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+/* Shiny lights effect */
 .contents {
   position: absolute;
   top: -98px; /* Position above the box */
@@ -130,6 +440,132 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   z-index: 300; /* Ensure it's above everything */
+}
+
+/* Confetti container positioning */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.glitter-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.glitter {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--sparkle-gold);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  animation: glitterFall 3s ease-in forwards;
+}
+
+@keyframes boxHover {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px var(--glow-color), 0 0 5px rgba(139, 92, 246, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px var(--glow-color), 0 0 15px rgba(139, 92, 246, 0.4),
+      0 0 25px rgba(139, 92, 246, 0.2);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: -100px 0;
+  }
+  40%,
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+@keyframes lidFlyOff {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(-50px) rotate(-5deg);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(-200px) rotate(-10deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-400px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rewardPopUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rewardHover {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -55%) scale(1.05);
+  }
+}
+@keyframes carDriveOut {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotateY(0deg);
+    opacity: 0;
+  }
+  30% {
+    transform: translate(-50%, -150%) scale(1.2) rotateY(180deg);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-50%, -180%) scale(1.1) rotateY(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -120%) scale(1) rotateY(0deg);
+    opacity: 1;
+  }
 }
 .car-image {
   width: 120px;
@@ -169,3 +605,219 @@ body {
   border: 2px solid #374151;
 }
 
+.car-glow {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: radial-gradient(
+    circle at center,
+    rgba(239, 68, 68, 0.4) 0%,
+    transparent 70%
+  );
+  border-radius: 10px;
+  filter: blur(10px);
+  animation: carPulse 2s ease-in-out infinite;
+}
+
+@keyframes carPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.box .contents {
+  display: none;
+}
+
+@keyframes carRotate {
+  0%,
+  100% {
+    transform: rotateY(0deg) translateY(0px);
+  }
+  25% {
+    transform: rotateY(90deg) translateY(-10px);
+  }
+  50% {
+    transform: rotateY(180deg) translateY(0px);
+  }
+  75% {
+    transform: rotateY(270deg) translateY(-10px);
+  }
+}
+
+@keyframes shineLights {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes stageGlow {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes platformPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes sparkleMove {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-400px);
+  }
+}
+
+@keyframes sparkleFloat {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(180deg);
+  }
+}
+
+@keyframes glitterFall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(500px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Add shine effect to the box */
+.box::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 3s ease-in-out infinite;
+  z-index: -1;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.instruction-text {
+  margin-top: 30px;
+  color: #1f2937;
+  font-size: 14px;
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
+  font-weight: 500;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .board {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .board::before {
+    width: 400px;
+    height: 300px;
+  }
+
+  .box {
+    margin: 150px 25px 25px;
+    height: 180px;
+    width: 180px;
+  }
+
+  .contents {
+    font-size: 22px;
+    width: 140%;
+  }
+
+  .instruction-text {
+    font-size: 12px;
+    margin-top: 20px;
+    bottom: -50px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .board::before {
+    width: 300px;
+    height: 250px;
+  }
+
+  .box {
+    height: 160px;
+    width: 160px;
+  }
+
+  .contents {
+    font-size: 18px;
+    width: 160%;
+  }
+}

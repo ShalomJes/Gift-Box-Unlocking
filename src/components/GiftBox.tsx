@@ -1,4 +1,4 @@
-// GiftBox.tsx - Basic structure
+// src/components/GiftBox/GiftBox.tsx
 import React from "react";
 import ReactConfetti from "react-confetti";
 
@@ -13,13 +13,18 @@ const GiftBox: React.FC<GiftBoxProps> = ({
   onOpen,
   rewardText = "Red Sports Car!",
 }) => {
+  const boxRef = React.useRef<HTMLDivElement>(null);
   const [open, setOpen] = React.useState(isOpened);
-const [showConfetti, setShowConfetti] = React.useState(false);
-const [showGlitter, setShowGlitter] = React.useState(false);
+  const [showConfetti, setShowConfetti] = React.useState(false);
+  const [showGlitter, setShowGlitter] = React.useState(false);
+
+  React.useEffect(() => {
+    setOpen(isOpened);
+  }, [isOpened]);
 
   const createSparkles = () => {
     const sparkles = [];
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 20; i++) {
       sparkles.push(
         <div
           key={i}
@@ -33,9 +38,10 @@ const [showGlitter, setShowGlitter] = React.useState(false);
         />
       );
     }
-    return sparkles
-  }
-const createGlitter = () => {
+    return sparkles;
+  };
+
+  const createGlitter = () => {
     if (!showGlitter) return null;
 
     const glitterPieces = [];
@@ -60,7 +66,8 @@ const createGlitter = () => {
     }
     return glitterPieces;
   };
-   const handleClick = () => {
+
+  const handleClick = () => {
     if (!open) {
       setOpen(true);
       setShowConfetti(true);
@@ -80,10 +87,40 @@ const createGlitter = () => {
       setShowGlitter(false);
     }
   };
-   const [dimensions, setDimensions] = React.useState(() => ({
+
+  React.useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " " || e.code === "Space") {
+        e.preventDefault();
+        handleClick();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [open]);
+
+  const [dimensions, setDimensions] = React.useState(() => ({
     width: typeof window !== "undefined" ? window.innerWidth : 0,
     height: typeof window !== "undefined" ? window.innerHeight : 0,
   }));
+
+  React.useEffect(() => {
+    const handleResize = () =>
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+      handleResize();
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
+
   const { width, height } = dimensions;
 
   return (
@@ -111,13 +148,17 @@ const createGlitter = () => {
       <div className="sparkle-container">{createSparkles()}</div>
 
       <div className="glitter-container">{createGlitter()}</div>
-      <div className={`box ${open ? "open" : ""}`}>
-        <div className="lid">
+
+      <div className={`box ${open ? "open" : ""}`} id="box" ref={boxRef}>
+        <div
+          className={`lid ${open ? "animate-lid-open" : "animate-lid-close"}`}
+        >
           <span className="ribbon"></span>
         </div>
         <div className="body"></div>
-        <div className="contents">{rewardText}</div>
-         <div className="car-container">
+
+        {/* Car that comes out of the box */}
+        <div className="car-container">
           <div className="car-glow"></div>
           <div className="car-image">
             <div className="car-window"></div>
@@ -128,9 +169,24 @@ const createGlitter = () => {
             </div>
           </div>
         </div>
+
+        <div className="contents">{rewardText}</div>
       </div>
+
+      {!open && (
+        <div className="instruction-text">
+          Click the gift box or press SPACE/ENTER to reveal your reward!
+        </div>
+      )}
+
+      {open && (
+        <div className="instruction-text">
+          Click the box or press SPACE/ENTER to close
+        </div>
+      )}
+
+      {createSparkles()}
     </div>
-    
   );
 };
 
