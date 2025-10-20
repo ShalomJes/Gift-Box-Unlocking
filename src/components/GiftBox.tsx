@@ -124,7 +124,7 @@ const GiftBox: React.FC<GiftBoxProps> = ({
   const { width, height } = dimensions;
 
   return (
-    <div className="board" onClick={handleClick}>
+    <div className="board flex items-center justify-center w-full" onClick={handleClick}>
       {showConfetti && (
         <ReactConfetti
           width={width}
@@ -144,48 +144,51 @@ const GiftBox: React.FC<GiftBoxProps> = ({
           tweenDuration={8000}
         />
       )}
+      <div>
+        <div className="sparkle-container">{createSparkles()}</div>
 
-      <div className="sparkle-container">{createSparkles()}</div>
+        <div className="glitter-container">{createGlitter()}</div>
 
-      <div className="glitter-container">{createGlitter()}</div>
+        <div className={`box ${open ? "open" : ""}`} id="box" ref={boxRef}>
+          <div
+            className={`lid ${open ? "animate-lid-open" : "animate-lid-close"}`}
+          >
+            <span className="ribbon"></span>
+            <span className="ribbon-streamer"></span>
+          </div>
+          <div className="body"></div>
 
-      <div className={`box ${open ? "open" : ""}`} id="box" ref={boxRef}>
-        <div
-          className={`lid ${open ? "animate-lid-open" : "animate-lid-close"}`}
-        >
-          <span className="ribbon"></span>
-        </div>
-        <div className="body"></div>
-
-        {/* Car that comes out of the box */}
-        <div className="car-container">
-          <div className="car-glow"></div>
-          <div className="car-image">
-            <div className="car-window"></div>
-            <div className="car-details"></div>
-            <div className="car-wheels">
-              <div className="car-wheel"></div>
-              <div className="car-wheel"></div>
+          {/* Car that comes out of the box */}
+          <div className="car-container">
+            <div className="car-glow"></div>
+            <div className="car-image">
+              <div className="car-window"></div>
+              <div className="car-details"></div>
+              <div className="car-wheels">
+                <div className="car-wheel"></div>
+                <div className="car-wheel"></div>
+              </div>
             </div>
           </div>
+
+          <div className="contents">{rewardText}</div>
+          {!open && (
+          <div className="instruction-text">
+            Click the gift box or press SPACE/ENTER to reveal your reward!
+          </div>
+        )}
+
+        {open && (
+          <div className="instruction-text">
+            Click the box or press SPACE/ENTER to close
+          </div>
+        )}
         </div>
 
-        <div className="contents">{rewardText}</div>
+        
+
+        {createSparkles()}
       </div>
-
-      {!open && (
-        <div className="instruction-text">
-          Click the gift box or press SPACE/ENTER to reveal your reward!
-        </div>
-      )}
-
-      {open && (
-        <div className="instruction-text">
-          Click the box or press SPACE/ENTER to close
-        </div>
-      )}
-
-      {createSparkles()}
     </div>
   );
 };

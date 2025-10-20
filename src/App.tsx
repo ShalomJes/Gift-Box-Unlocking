@@ -13,7 +13,7 @@ function App() {
     <main className="galaxy-sparkle w-full">
       <div className="flex flex-col items-center gap-8">
         <div className="text-center space-y-3">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground text-white">
+          <h1 className="text-5xl font-bold text-foreground text-white">
             Unlock Your Gift Box
           </h1>
         </div>
